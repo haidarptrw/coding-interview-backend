@@ -306,6 +306,8 @@ When you're done, please provide:
    - Any **optional improvements** you implemented.
    - Anything you would improve further if you had more time.
 
+3. You are allowed to use AI Assistants to help you write `NOTES.md`.
+
 ---
 
 ## How We'll Discuss This in the Interview
