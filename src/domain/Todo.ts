@@ -9,4 +9,7 @@ export interface Todo {
   createdAt: Date;
   updatedAt: Date;
   remindAt?: Date;
+  // new data properties
+  deleted?: boolean;
+  expiredAt?: Date;
 }
