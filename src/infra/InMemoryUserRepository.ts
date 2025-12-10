@@ -1,6 +1,7 @@
 import { User } from "../domain/User";
 import { IUserRepository } from "../core/IUserRepository";
 import z from "zod";
+import { ResponseErrorFactory } from "../types";
 
 export class InMemoryUserRepository implements IUserRepository {
   private users: User[] = [];
@@ -26,7 +27,7 @@ export class InMemoryUserRepository implements IUserRepository {
     const result = validUserSchema.partial().safeParse(userData);
 
     if (!result.success) {
-      throw new Error(`Invalid user data input: ${result.error}`);
+      throw ResponseErrorFactory.new(`Invalid user data input: ${result.error}`, 400);
     }
     
     this.idCounter++;

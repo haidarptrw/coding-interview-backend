@@ -1,6 +1,7 @@
 import { Todo } from "../domain/Todo";
 import { ITodoRepository } from "../core/ITodoRepository";
 import z from "zod";
+import { ResponseErrorFactory } from "../types";
 
 const validTodoSchema = z.object({
   title: z.string().min(1).trim().nonempty("Title cannot be empty")
@@ -18,11 +19,11 @@ export class InMemoryTodoRepository implements ITodoRepository {
 
     // validate title
     if (todoData.title.length === 0) {
-      throw new Error("Title should not be empty");
+      throw ResponseErrorFactory.new("Title should not be empty", 400);
     }
 
     const result = validTodoSchema.partial().safeParse(todoData);
-    if (!result.success) throw new Error(`Invalid Todo data format: ${result.error.message}`);
+    if (!result.success) throw ResponseErrorFactory.new(`Invalid Todo data format: ${result.error.message}`, 400);
 
     const todo: Todo = {
       ...todoData,
@@ -46,7 +47,7 @@ export class InMemoryTodoRepository implements ITodoRepository {
     }
 
     const result = validTodoSchema.partial().safeParse(updates);
-    if (!result.success) throw new Error(`Invalid Todo data format: ${result.error.message}`);    
+    if (!result.success) throw ResponseErrorFactory.new(`Invalid Todo data format: ${result.error.message}`, 400);    
 
     const now = new Date();
 

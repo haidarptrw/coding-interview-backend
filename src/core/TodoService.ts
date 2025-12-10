@@ -1,5 +1,5 @@
 import { Todo } from "../domain/Todo";
-import { ShareBody } from "../types";
+import { ResponseErrorFactory, ShareBody } from "../types";
 import { ITodoRepository } from './ITodoRepository';
 import { IUserRepository } from "./IUserRepository";
 
@@ -14,7 +14,7 @@ export class TodoService {
     // Validate whether the user is exists in the repository
     const user = await this.userRepo.findById(data.userId);
     if (!user) {
-      throw Error("User that owns this todo was not found in the repository");
+      throw ResponseErrorFactory.new("User that owns this todo was not found in the repository", 404);
     }
 
     // This throws error when the validation failed. should be handled by the HTTP handler
@@ -33,7 +33,7 @@ export class TodoService {
     const todo = await this.todoRepo.findById(todoId);
 
     if (!todo) {
-      throw new Error(`todo with id = ${todoId} is not found`);
+      throw ResponseErrorFactory.new(`todo with id = ${todoId} is not found`, 404);
     }
 
     if (todo.status === "DONE") {
@@ -46,7 +46,7 @@ export class TodoService {
     });
 
     if (!updated) {
-      throw new Error("Failed to update the requested todo because it was not found");
+      throw ResponseErrorFactory.new("Failed to update the requested todo because it was not found", 404);
     }
 
     return updated;
@@ -102,13 +102,13 @@ export class TodoService {
     // find the todo
     const todo = await this.todoRepo.findById(payload.id);
     if (!todo) {
-      throw new Error(`Todo with id ${payload.id} was not found`);
+      throw ResponseErrorFactory.new(`Todo with id ${payload.id} was not found`, 404);
     }
 
     // find the user target
     const user = await this.userRepo.findById(payload.userIdTarget);
     if (!user) {
-      throw new Error(`Target user with id ${payload.userIdTarget} was not found`);
+      throw ResponseErrorFactory.new(`Target user with id ${payload.userIdTarget} was not found`, 404);
     }
 
     const newTodo = await this.todoRepo.create({...todo, userId: user.id});
